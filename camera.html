@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kamera</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>KAMERA LIVE</h1>
+<video id="video" autoplay></video>
+
+<script>
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+  document.getElementById('video').srcObject = stream;
+});
+</script>
+
+</body>
+</html>
