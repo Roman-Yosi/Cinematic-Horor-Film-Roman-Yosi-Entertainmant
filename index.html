@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Roman Yosi - Cinematic Horror</title>
 
-<link rel="stylesheet" href="style.css">
-
 <style>
 body{
   margin:0;
@@ -26,7 +24,6 @@ nav{
   flex-wrap:wrap;
   justify-content:center;
   gap:10px;
-  margin-top:10px;
 }
 
 nav a{
@@ -45,25 +42,36 @@ nav a{
 
 .profile{
   text-align:center;
-  margin-top:20px;
 }
 
 .profile img{
   width:150px;
   height:150px;
   border-radius:50%;
-  object-fit:cover;
   border:4px solid #00ff99;
   box-shadow:0 0 20px #00ff99;
+  object-fit:cover;
 }
 
-.video{
+.feed{
   padding:15px;
+}
+
+.feed h2{
+  text-align:center;
+  color:#00ff99;
+}
+
+.video-box{
+  background:#1a1a1a;
+  margin:10px 0;
+  padding:10px;
+  border-radius:10px;
 }
 
 iframe{
   width:100%;
-  height:300px;
+  height:250px;
   border:none;
 }
 </style>
@@ -86,20 +94,55 @@ iframe{
 
 <div class="hero">
   <h2>Cinematic Horror Channel</h2>
-  <p>Roman Yosi & Kromantv Official</p>
 </div>
 
 <div class="profile">
   <img src="https://raw.githubusercontent.com/Roman-Yosi/Poto-mister-cinema/refs/heads/main/Cinemamisteri.png">
-  <h2>Roman Yosi</h2>
-  <p>Cinematic Horror Creator</p>
+  <h3>Roman Yosi</h3>
 </div>
 
-<div class="video">
-  <h3>Latest Video</h3>
-
-  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+<!-- FEED VIDEO AUTO (RSS) -->
+<div class="feed">
+  <h2>🔥 Latest Videos</h2>
+  <div id="videoFeed">Loading...</div>
 </div>
+
+<script>
+async function loadFeed(){
+
+  const feeds = [
+    "https://www.youtube.com/feeds/videos.xml?channel_id=UCMnig2Zwu_aHwu9LS_2XsgA",
+    "https://www.youtube.com/feeds/videos.xml?channel_id=UCUTSzBr1CERM8lB9OTCwrQg"
+  ];
+
+  let all = [];
+
+  for(let url of feeds){
+    let res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(url));
+    let data = await res.json();
+    if(data.items) all = all.concat(data.items);
+  }
+
+  all.sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
+
+  let html = "";
+
+  all.slice(0,8).forEach(v=>{
+    let id = v.link.split("v=")[1];
+
+    html += `
+      <div class="video-box">
+        <h4>${v.title}</h4>
+        <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
+      </div>
+    `;
+  });
+
+  document.getElementById("videoFeed").innerHTML = html;
+}
+
+loadFeed();
+</script>
 
 </body>
 </html>
